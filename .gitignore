@@ -1,0 +1,10 @@
+/target/
+/dist/
+**/*.rs.bk
+.DS_Store
+test-media/
+*.app/
+.idea/
+.vscode/
+*.zip
+.cursor/

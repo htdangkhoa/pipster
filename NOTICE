@@ -1,0 +1,28 @@
+Pipster
+=======
+
+Pipster is licensed under the MIT License (see LICENSE).
+
+This product launches the third-party **mpv** media player as a subprocess and
+controls it over the mpv JSON IPC socket. mpv is not linked into the Pipster
+binary on the macOS MVP path.
+
+mpv
+---
+Copyright (C) mpv authors
+Licensed under GPLv2+ / LGPLv2.1+ depending on build options.
+Homepage: https://mpv.io/
+Source: https://github.com/mpv-player/mpv
+
+On macOS, install with Homebrew: `brew install mpv`
+
+FFmpeg (used by mpv)
+--------------------
+Licensed under LGPL 2.1+ or GPL depending on configuration.
+Homepage: https://ffmpeg.org/
+
+Slint
+-----
+Copyright (C) SixtyFPS GmbH
+Slint is available under GPLv3, Royalty-free, or commercial licenses.
+Homepage: https://slint.dev/

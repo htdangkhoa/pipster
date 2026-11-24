@@ -1,0 +1,141 @@
+import { Theme } from "theme.slint";
+import { Button, HorizontalBox, VerticalBox, Slider } from "std-widgets.slint";
+
+export component PlayerWindow inherits Window {
+    title: root.title-text;
+    preferred-width: 480px;
+    preferred-height: 300px;
+    background: #000000;
+    always-on-top: true;
+    no-frame: root.borderless;
+
+    in-out property <string> title-text: "Pipster Player";
+    in-out property <string> path-label: "";
+    in-out property <bool> paused: true;
+    in-out property <bool> muted: true;
+    in-out property <bool> pinned: true;
+    in-out property <bool> borderless: false;
+    in-out property <bool> show-controls: true;
+    in-out property <float> position: 0.0;
+    in-out property <float> duration: 1.0;
+    in-out property <bool> has-media: false;
+
+    callback toggle-pause();
+    callback toggle-mute();
+    callback toggle-always-on-top();
+    callback toggle-borderless();
+    callback seek(float);
+    callback close-requested();
+    callback open-file();
+
+    changed pinned => {
+        root.always-on-top = root.pinned;
+    }
+
+    forward-focus: key-handler;
+
+    key-handler := FocusScope {
+        key-pressed(event) => {
+            if (event.text == " ") {
+                root.toggle-pause();
+                return accept;
+            }
+            if (event.text == "m" || event.text == "M") {
+                root.toggle-mute();
+                return accept;
+            }
+            if (event.text == Key.Escape) {
+                root.close-requested();
+                return accept;
+            }
+            return reject;
+        }
+
+        VerticalBox {
+            padding: 0;
+            spacing: 0;
+
+            Rectangle {
+                vertical-stretch: 1;
+                background: transparent;
+
+                TouchArea {
+                    width: 100%;
+                    height: 100%;
+                    clicked => {
+                        root.show-controls = !root.show-controls;
+                    }
+                    double-clicked => {
+                        root.toggle-pause();
+                    }
+                }
+
+                if !root.has-media: VerticalBox {
+                    alignment: center;
+                    Text {
+                        text: "Drop a video or Open…";
+                        color: Theme.fg-muted;
+                        horizontal-alignment: center;
+                    }
+                    Button {
+                        text: "Open…";
+                        clicked => { root.open-file(); }
+                    }
+                }
+            }
+
+            if root.show-controls: Rectangle {
+                height: 72px;
+                background: #12141acc;
+
+                VerticalBox {
+                    padding: 8px;
+                    spacing: 6px;
+
+                    Text {
+                        text: root.path-label;
+                        color: Theme.fg;
+                        font-size: 11px;
+                        overflow: elide;
+                    }
+
+                    Slider {
+                        value: root.duration > 0 ? root.position / root.duration : 0;
+                        changed(value) => {
+                            root.seek(value * root.duration);
+                        }
+                    }
+
+                    HorizontalBox {
+                        spacing: 6px;
+                        Button {
+                            text: root.paused ? "Play" : "Pause";
+                            clicked => { root.toggle-pause(); }
+                        }
+                        Button {
+                            text: root.muted ? "Unmute" : "Mute";
+                            clicked => { root.toggle-mute(); }
+                        }
+                        Button {
+                            text: root.pinned ? "Pinned" : "Pin";
+                            clicked => { root.toggle-always-on-top(); }
+                        }
+                        Button {
+                            text: root.borderless ? "Frame" : "Chrome";
+                            clicked => { root.toggle-borderless(); }
+                        }
+                        Button {
+                            text: "Open…";
+                            clicked => { root.open-file(); }
+                        }
+                        Rectangle { horizontal-stretch: 1; background: transparent; }
+                        Button {
+                            text: "Close";
+                            clicked => { root.close-requested(); }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

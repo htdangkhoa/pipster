@@ -1,0 +1,129 @@
+import { Theme } from "theme.slint";
+import { Button, VerticalBox, HorizontalBox } from "std-widgets.slint";
+
+export component MainWindow inherits Window {
+    title: "Pipster";
+    preferred-width: 420px;
+    preferred-height: 380px;
+    background: root.drop-hover ? #1a2a3d : Theme.bg;
+
+    in-out property <bool> mute-on-spawn: true;
+    in-out property <bool> always-on-top-default: true;
+    in-out property <string> status-text: "Open or drop videos to spawn floating mpv PiP windows.";
+    in-out property <int> open-windows: 0;
+    in-out property <int> playing-windows: 0;
+    in-out property <bool> drop-hover: false;
+
+    callback open-files();
+    callback apply-prefs(bool, bool);
+    callback pause-all();
+    callback new-empty-player();
+
+    forward-focus: key-handler;
+    key-handler := FocusScope {
+        width: 100%;
+        height: 100%;
+        key-pressed(event) => {
+            if (event.modifiers.meta && event.text == "o") {
+                root.open-files();
+                return accept;
+            }
+            if (event.modifiers.meta && event.text == "n") {
+                root.new-empty-player();
+                return accept;
+            }
+            return reject;
+        }
+
+        VerticalBox {
+            padding: Theme.pad;
+            spacing: 10px;
+
+            Text {
+                text: "Pipster";
+                color: Theme.fg;
+                font-size: 28px;
+                font-weight: 700;
+            }
+
+            Text {
+                text: "Lightweight multi-window PiP player";
+                color: Theme.fg-muted;
+                font-size: 13px;
+            }
+
+            Rectangle {
+                height: 48px;
+                background: root.drop-hover ? #3d8bfd44 : Theme.bg-elevated;
+                border-radius: Theme.radius;
+                border-width: 1.5px;
+                border-color: root.drop-hover ? Theme.accent : Theme.fg-muted;
+                Text {
+                    text: root.drop-hover ? "Release to open" : "Drop video files here";
+                    color: root.drop-hover ? Theme.accent : Theme.fg-muted;
+                    horizontal-alignment: center;
+                    vertical-alignment: center;
+                    width: 100%;
+                    height: 100%;
+                    font-size: 13px;
+                }
+            }
+
+            HorizontalBox {
+                spacing: 8px;
+                Button {
+                    text: "Open…";
+                    primary: true;
+                    clicked => { root.open-files(); }
+                }
+                Button {
+                    text: "Pause all";
+                    clicked => { root.pause-all(); }
+                }
+            }
+
+            Text {
+                text: root.status-text;
+                color: Theme.fg-muted;
+                font-size: 12px;
+                wrap: word-wrap;
+            }
+
+            Text {
+                text: "Windows: \{root.open-windows}  ·  Playing: \{root.playing-windows}";
+                color: Theme.fg;
+                font-size: 12px;
+            }
+
+            Text {
+                text: "Preferences";
+                color: Theme.fg;
+                font-size: 16px;
+                font-weight: 600;
+            }
+
+            HorizontalBox {
+                Text { text: "Mute on spawn"; color: Theme.fg-muted; vertical-alignment: center; }
+                Button {
+                    text: root.mute-on-spawn ? "On" : "Off";
+                    clicked => { root.mute-on-spawn = !root.mute-on-spawn; }
+                }
+            }
+
+            HorizontalBox {
+                Text { text: "Always on top"; color: Theme.fg-muted; vertical-alignment: center; }
+                Button {
+                    text: root.always-on-top-default ? "On" : "Off";
+                    clicked => { root.always-on-top-default = !root.always-on-top-default; }
+                }
+            }
+
+            Button {
+                text: "Save preferences";
+                clicked => {
+                    root.apply-prefs(root.mute-on-spawn, root.always-on-top-default);
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,13 @@
+[package]
+name = "pipster-player"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "mpv subprocess PlayerCore pool for Pipster"
+
+[dependencies]
+thiserror = { workspace = true }
+parking_lot = { workspace = true }
+uuid = { workspace = true }
+pipster-governor = { path = "../pipster-governor" }
+serde_json = { workspace = true }

@@ -1,0 +1,9 @@
+[package]
+name = "pipster-governor"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Resource governor for concurrent Pipster player cores"
+
+[dependencies]
+serde = { workspace = true }

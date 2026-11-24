@@ -1,0 +1,40 @@
+[package]
+name = "pipster"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Lightweight multi-window PiP video player"
+default-run = "pipster"
+
+[[bin]]
+name = "pipster"
+path = "src/main.rs"
+
+[dependencies]
+pipster-player = { path = "../pipster-player" }
+pipster-governor = { path = "../pipster-governor" }
+slint = { workspace = true }
+rfd = { workspace = true }
+directories = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+parking_lot = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+uuid = { workspace = true }
+muda = "0.21"
+ureq = { version = "2.12", default-features = true, features = ["tls"] }
+semver = "1"
+
+[target.'cfg(target_os = "macos")'.dependencies]
+objc2 = "0.6"
+objc2-foundation = { version = "0.3", features = [
+    "NSArray",
+    "NSObject",
+    "NSString",
+    "NSURL",
+] }
+objc2-app-kit = { version = "0.3", features = ["NSApplication", "NSResponder"] }
+
+[build-dependencies]
+slint-build = { workspace = true }
