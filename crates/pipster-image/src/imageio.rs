@@ -145,9 +145,8 @@ pub fn write_fit_preview(
         }
     }
 
-    fs::rename(&tmp, dest_jpeg).map_err(|err| {
+    fs::rename(&tmp, dest_jpeg).inspect_err(|_| {
         let _ = fs::remove_file(&tmp);
-        err
     })?;
 
     let out_w = CGImage::width(Some(&image)) as u32;
@@ -233,9 +232,8 @@ pub fn write_cgimage_jpeg(
             )));
         }
     }
-    fs::rename(&tmp, dest_jpeg).map_err(|err| {
+    fs::rename(&tmp, dest_jpeg).inspect_err(|_| {
         let _ = fs::remove_file(&tmp);
-        err
     })?;
     Ok(())
 }

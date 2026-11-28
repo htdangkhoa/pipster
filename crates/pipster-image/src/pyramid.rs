@@ -54,7 +54,7 @@ impl PyramidMeta {
 
     pub fn load(root: &Path) -> Result<Self, ImageError> {
         let text = fs::read_to_string(Self::meta_path(root))?;
-        Ok(serde_json::from_str(&text).map_err(|e| ImageError::Preview(e.to_string()))?)
+        serde_json::from_str(&text).map_err(|e| ImageError::Preview(e.to_string()))
     }
 
     pub fn save(&self, root: &Path) -> Result<(), ImageError> {
@@ -84,7 +84,7 @@ impl PyramidMeta {
 }
 
 pub fn compute_max_level(width: u32, height: u32) -> u32 {
-    let edge = width.max(height).max(1).min(MAX_LEVEL_EDGE);
+    let edge = width.max(height).clamp(1, MAX_LEVEL_EDGE);
     let mut level = 0u32;
     let mut size = 1u32;
     while size < edge {
@@ -112,7 +112,7 @@ pub fn level_dimensions(full_w: u32, full_h: u32, max_level: u32, level: u32) ->
     };
     let shift = max_level.saturating_sub(level);
     let scale = 1u32 << shift;
-    ((fw + scale - 1) / scale, (fh + scale - 1) / scale)
+    (fw.div_ceil(scale), fh.div_ceil(scale))
 }
 
 pub fn overview_level(full_w: u32, full_h: u32, max_level: u32, target: u32) -> u32 {
@@ -215,11 +215,7 @@ fn build_level(
     }
 
     let expected = &meta.levels[level as usize];
-    let max_px = expected
-        .width
-        .max(expected.height)
-        .max(1)
-        .min(MAX_LEVEL_EDGE);
+    let max_px = expected.width.max(expected.height).clamp(1, MAX_LEVEL_EDGE);
     tracing::info!(level, max_px, "building pyramid level jpeg");
 
     let image = thumbnail_cgimage(source, max_px)?;
