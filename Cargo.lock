@@ -3489,7 +3489,7 @@ dependencies = [
 
 [[package]]
 name = "pipster"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "directories",
  "muda",
@@ -3514,14 +3514,14 @@ dependencies = [
 
 [[package]]
 name = "pipster-governor"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "serde",
 ]
 
 [[package]]
 name = "pipster-image"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "directories",
  "objc2-core-foundation",
@@ -3535,7 +3535,7 @@ dependencies = [
 
 [[package]]
 name = "pipster-player"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "parking_lot",
  "pipster-governor",
