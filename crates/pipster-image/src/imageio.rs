@@ -1,6 +1,6 @@
 use crate::{ImageError, ImageInfo, PreviewInfo};
 use objc2_core_foundation::{
-    CFBoolean, CFDictionary, CFNumber, CFRetained, CFString, CFType, CFURL, CFURLPathStyle,
+    CFBoolean, CFDictionary, CFNumber, CFRetained, CFString, CFType, CFURLPathStyle, CFURL,
 };
 use objc2_core_graphics::CGImage;
 use objc2_image_io::{
@@ -13,9 +13,9 @@ use std::fs;
 use std::path::Path;
 
 fn file_url(path: &Path) -> Result<CFRetained<CFURL>, ImageError> {
-    let s = path.to_str().ok_or_else(|| {
-        ImageError::Probe(format!("non-UTF8 path: {}", path.display()))
-    })?;
+    let s = path
+        .to_str()
+        .ok_or_else(|| ImageError::Probe(format!("non-UTF8 path: {}", path.display())))?;
     CFURL::with_file_system_path(
         None,
         Some(&CFString::from_str(s)),
@@ -42,8 +42,10 @@ fn cf_i64(dict: &CFDictionary<CFString, CFType>, key: &CFString) -> Option<i64> 
 pub fn probe(path: &Path) -> Result<ImageInfo, ImageError> {
     let url = file_url(path)?;
     let options = source_no_cache_options();
-    let source = unsafe { CGImageSource::with_url(&url, Some(options.as_opaque())) }
-        .ok_or_else(|| ImageError::Probe(format!("CGImageSource open failed: {}", path.display())))?;
+    let source =
+        unsafe { CGImageSource::with_url(&url, Some(options.as_opaque())) }.ok_or_else(|| {
+            ImageError::Probe(format!("CGImageSource open failed: {}", path.display()))
+        })?;
 
     if unsafe { source.count() } == 0 {
         return Err(ImageError::Probe(format!(
@@ -56,12 +58,10 @@ pub fn probe(path: &Path) -> Result<ImageInfo, ImageError> {
         .ok_or_else(|| ImageError::Probe("missing image properties".into()))?;
     let props = unsafe { CFRetained::cast_unchecked::<CFDictionary<CFString, CFType>>(props) };
 
-    let width = cf_i64(&props, unsafe { kCGImagePropertyPixelWidth }).ok_or_else(|| {
-        ImageError::Probe("missing PixelWidth".into())
-    })?;
-    let height = cf_i64(&props, unsafe { kCGImagePropertyPixelHeight }).ok_or_else(|| {
-        ImageError::Probe("missing PixelHeight".into())
-    })?;
+    let width = cf_i64(&props, unsafe { kCGImagePropertyPixelWidth })
+        .ok_or_else(|| ImageError::Probe("missing PixelWidth".into()))?;
+    let height = cf_i64(&props, unsafe { kCGImagePropertyPixelHeight })
+        .ok_or_else(|| ImageError::Probe("missing PixelHeight".into()))?;
     if width <= 0 || height <= 0 {
         return Err(ImageError::Probe(format!(
             "invalid dimensions {width}x{height}"
@@ -114,15 +114,20 @@ pub fn write_fit_preview(
     ];
     let thumb_opts = CFDictionary::<CFType, CFType>::from_slices(&thumb_keys, &thumb_vals);
 
-    let image = unsafe { source.thumbnail_at_index(0, Some(thumb_opts.as_opaque())) }.ok_or_else(
-        || ImageError::Preview(format!("thumbnail decode failed: {}", path.display())),
-    )?;
+    let image =
+        unsafe { source.thumbnail_at_index(0, Some(thumb_opts.as_opaque())) }.ok_or_else(|| {
+            ImageError::Preview(format!("thumbnail decode failed: {}", path.display()))
+        })?;
 
     let out_url = file_url(&tmp)?;
     let jpeg_uti = CFString::from_str("public.jpeg");
-    let dest = unsafe { CGImageDestination::with_url(&out_url, &jpeg_uti, 1, None) }.ok_or_else(
-        || ImageError::Preview(format!("CGImageDestination create failed: {}", tmp.display())),
-    )?;
+    let dest =
+        unsafe { CGImageDestination::with_url(&out_url, &jpeg_uti, 1, None) }.ok_or_else(|| {
+            ImageError::Preview(format!(
+                "CGImageDestination create failed: {}",
+                tmp.display()
+            ))
+        })?;
 
     let quality = CFNumber::new_f64(0.85);
     let prop_keys: [&CFType; 1] = [unsafe { kCGImageDestinationLossyCompressionQuality }.as_ref()];
@@ -191,12 +196,15 @@ pub fn thumbnail_cgimage(
         max_px.as_ref(),
     ];
     let thumb_opts = CFDictionary::<CFType, CFType>::from_slices(&thumb_keys, &thumb_vals);
-    unsafe { source.thumbnail_at_index(0, Some(thumb_opts.as_opaque())) }.ok_or_else(|| {
-        ImageError::Preview(format!("thumbnail decode failed: {}", path.display()))
-    })
+    unsafe { source.thumbnail_at_index(0, Some(thumb_opts.as_opaque())) }
+        .ok_or_else(|| ImageError::Preview(format!("thumbnail decode failed: {}", path.display())))
 }
 
-pub fn write_cgimage_jpeg(image: &CGImage, dest_jpeg: &Path, quality: f64) -> Result<(), ImageError> {
+pub fn write_cgimage_jpeg(
+    image: &CGImage,
+    dest_jpeg: &Path,
+    quality: f64,
+) -> Result<(), ImageError> {
     if let Some(parent) = dest_jpeg.parent() {
         fs::create_dir_all(parent)?;
     }
@@ -204,9 +212,13 @@ pub fn write_cgimage_jpeg(image: &CGImage, dest_jpeg: &Path, quality: f64) -> Re
     let _ = fs::remove_file(&tmp);
     let out_url = file_url(&tmp)?;
     let jpeg_uti = CFString::from_str("public.jpeg");
-    let dest = unsafe { CGImageDestination::with_url(&out_url, &jpeg_uti, 1, None) }.ok_or_else(
-        || ImageError::Preview(format!("CGImageDestination create failed: {}", tmp.display())),
-    )?;
+    let dest =
+        unsafe { CGImageDestination::with_url(&out_url, &jpeg_uti, 1, None) }.ok_or_else(|| {
+            ImageError::Preview(format!(
+                "CGImageDestination create failed: {}",
+                tmp.display()
+            ))
+        })?;
     let q = CFNumber::new_f64(quality.clamp(0.1, 1.0));
     let prop_keys: [&CFType; 1] = [unsafe { kCGImageDestinationLossyCompressionQuality }.as_ref()];
     let prop_vals: [&CFType; 1] = [q.as_ref()];

@@ -401,9 +401,7 @@ impl AppController {
                     #[cfg(target_os = "macos")]
                     {
                         this.drain_image_jobs();
-                        this.image_windows
-                            .borrow_mut()
-                            .retain(|w| w.is_visible());
+                        this.image_windows.borrow_mut().retain(|w| w.is_visible());
                     }
                     this.refresh_main_counters();
                 },

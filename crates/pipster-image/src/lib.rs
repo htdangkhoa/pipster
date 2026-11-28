@@ -12,7 +12,7 @@ use std::path::{Path, PathBuf};
 
 pub use cache::preview_cache_path;
 pub use pyramid::{
-    continue_pyramid_build, ensure_pyramid_overview, compute_max_level, level_dimensions,
+    compute_max_level, continue_pyramid_build, ensure_pyramid_overview, level_dimensions,
     PyramidMeta, MAX_LEVEL_EDGE,
 };
 
@@ -97,10 +97,7 @@ pub fn write_fit_preview(
 }
 
 /// Return a cached fit-preview JPEG path, creating it if missing.
-pub fn ensure_fit_preview(
-    path: &Path,
-    max_pixel_size: u32,
-) -> Result<PreviewInfo, ImageError> {
+pub fn ensure_fit_preview(path: &Path, max_pixel_size: u32) -> Result<PreviewInfo, ImageError> {
     let dest = preview_cache_path(path, max_pixel_size)?;
     if dest.is_file() {
         let meta = probe(&dest).unwrap_or(ImageInfo {

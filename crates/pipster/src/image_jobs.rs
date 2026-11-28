@@ -38,8 +38,8 @@ pub fn take() -> Vec<ImageJobEvent> {
 }
 
 pub fn start_open(source: PathBuf, always_on_top: bool) {
-    std::thread::spawn(move || {
-        match pipster_image::ensure_pyramid_overview(&source) {
+    std::thread::spawn(
+        move || match pipster_image::ensure_pyramid_overview(&source) {
             Ok((root, meta)) => {
                 let root_for_build = root.clone();
                 let source_for_build = source.clone();
@@ -62,6 +62,6 @@ pub fn start_open(source: PathBuf, always_on_top: bool) {
             Err(err) => push(ImageJobEvent::Failed {
                 message: format!("Image tiles failed: {err}"),
             }),
-        }
-    });
+        },
+    );
 }

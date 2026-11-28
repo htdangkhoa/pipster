@@ -215,7 +215,11 @@ fn build_level(
     }
 
     let expected = &meta.levels[level as usize];
-    let max_px = expected.width.max(expected.height).max(1).min(MAX_LEVEL_EDGE);
+    let max_px = expected
+        .width
+        .max(expected.height)
+        .max(1)
+        .min(MAX_LEVEL_EDGE);
     tracing::info!(level, max_px, "building pyramid level jpeg");
 
     let image = thumbnail_cgimage(source, max_px)?;

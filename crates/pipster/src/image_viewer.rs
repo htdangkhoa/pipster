@@ -10,9 +10,7 @@
 
 use objc2::rc::{Allocated, Retained};
 use objc2::runtime::Bool;
-use objc2::{
-    define_class, msg_send, AnyThread, DefinedClass, MainThreadMarker, MainThreadOnly,
-};
+use objc2::{define_class, msg_send, AnyThread, DefinedClass, MainThreadMarker, MainThreadOnly};
 use objc2_app_kit::{
     NSBackingStoreType, NSColor, NSCompositingOperation, NSEvent, NSEventModifierFlags,
     NSFloatingWindowLevel, NSImage, NSScreen, NSView, NSWindow, NSWindowStyleMask,
@@ -282,9 +280,7 @@ impl PipsterImageContentView {
         if bounds.width < 1.0 || bounds.height < 1.0 {
             return 1e-6;
         }
-        (bounds.width / src_w)
-            .min(bounds.height / src_h)
-            .max(1e-6)
+        (bounds.width / src_w).min(bounds.height / src_h).max(1e-6)
     }
 
     fn dest_rect(&self) -> NSRect {
@@ -327,10 +323,7 @@ impl PipsterImageContentView {
             return None;
         }
 
-        let scale_factor = self
-            .window()
-            .map(|w| w.backingScaleFactor())
-            .unwrap_or(2.0);
+        let scale_factor = self.window().map(|w| w.backingScaleFactor()).unwrap_or(2.0);
         let need_edge = dest.size.width.max(dest.size.height) * scale_factor;
         let source_edge = self.ivars().source_w.get().max(self.ivars().source_h.get()) as f64;
         let need = (need_edge / source_edge.max(1.0)).clamp(0.0, 1.0);
@@ -498,10 +491,7 @@ pub fn open_tiled_window(
     let window = unsafe {
         NSWindow::initWithContentRect_styleMask_backing_defer(
             NSWindow::alloc(mtm),
-            NSRect::new(
-                NSPoint::new(0.0, 0.0),
-                NSSize::new(content_w, content_h),
-            ),
+            NSRect::new(NSPoint::new(0.0, 0.0), NSSize::new(content_w, content_h)),
             style,
             NSBackingStoreType::Buffered,
             false,
