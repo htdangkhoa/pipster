@@ -79,6 +79,34 @@ cat > "$CONTENTS/Info.plist" <<PLIST
         <string>org.webmproject.webm</string>
       </array>
     </dict>
+    <dict>
+      <key>CFBundleTypeName</key><string>Image</string>
+      <key>CFBundleTypeRole</key><string>Viewer</string>
+      <key>LSHandlerRank</key><string>Alternate</string>
+      <key>CFBundleTypeExtensions</key>
+      <array>
+        <string>jpg</string>
+        <string>jpeg</string>
+        <string>png</string>
+        <string>heic</string>
+        <string>heif</string>
+        <string>tif</string>
+        <string>tiff</string>
+        <string>webp</string>
+        <string>bmp</string>
+      </array>
+      <key>LSItemContentTypes</key>
+      <array>
+        <string>public.image</string>
+        <string>public.jpeg</string>
+        <string>public.png</string>
+        <string>public.tiff</string>
+        <string>public.heic</string>
+        <string>public.heif</string>
+        <string>org.webmproject.webp</string>
+        <string>com.microsoft.bmp</string>
+      </array>
+    </dict>
   </array>
   <key>UTImportedTypeDeclarations</key>
   <array>
@@ -108,5 +136,5 @@ elif [[ -x /System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchSe
 fi
 
 echo "Built $APP (v${VERSION})"
-echo "Open With: right-click a video → Open With → Pipster (may need one relaunch of Finder)."
+echo "Open With: right-click a video or image → Open With → Pipster (may need one relaunch of Finder)."
 echo "Requires Homebrew mpv on PATH (brew install mpv)."

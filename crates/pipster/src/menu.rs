@@ -148,7 +148,7 @@ pub fn install(app: &Rc<AppController>) {
                     MenuAction::NewPlayer => app.spawn_player(None),
                     MenuAction::PauseAll => app.pause_all_public(),
                     MenuAction::CheckUpdates => app.check_for_updates(true),
-                    MenuAction::OpenRecent(path) => app.spawn_player(Some(&path)),
+                    MenuAction::OpenRecent(path) => app.open_media(&path),
                     MenuAction::ClearRecent => app.clear_recent_public(),
                 }
             }

@@ -59,6 +59,8 @@ impl MpvProcess {
             // forced geometry). Cap initial size so PiP stays manageable.
             .arg("--autofit=480")
             .arg("--keepaspect-window=yes")
+            // Safari-like PiP: 20pt from the top-right of the screen.
+            .arg("--geometry=-20+20")
             // Hide each mpv subprocess from the Dock — Pipster is the app;
             // mpv windows are just player surfaces.
             .arg("--macos-app-activation-policy=accessory")

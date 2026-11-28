@@ -119,6 +119,19 @@ impl PlayerCore {
     }
 
     pub fn load(&mut self, path: &Path) -> Result<(), MpvSessionError> {
+        self.load_inner(path, false)
+    }
+
+    /// Load a still image: keep the frame on screen (mpv defaults to ~1s).
+    pub fn load_still(&mut self, path: &Path) -> Result<(), MpvSessionError> {
+        self.load_inner(path, true)
+    }
+
+    fn load_inner(&mut self, path: &Path, still: bool) -> Result<(), MpvSessionError> {
+        if still {
+            let _ = self.proc.set_property("loop-file", "inf");
+            let _ = self.proc.set_property("image-display-duration", "inf");
+        }
         self.proc.loadfile(path)?;
         self.path = Some(path.to_path_buf());
         self.enter_playing();

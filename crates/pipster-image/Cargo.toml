@@ -1,0 +1,29 @@
+[package]
+name = "pipster-image"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "ImageIO probe + shrink-on-load previews for Pipster"
+
+[dependencies]
+thiserror = { workspace = true }
+directories = { workspace = true }
+tracing = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+
+[target.'cfg(target_os = "macos")'.dependencies]
+objc2-core-foundation = { version = "0.3", features = [
+    "CFDictionary",
+    "CFNumber",
+    "CFString",
+    "CFURL",
+    "CFCGTypes",
+] }
+objc2-core-graphics = { version = "0.3", features = ["CGImage"] }
+objc2-image-io = { version = "0.3", features = [
+    "CGImageSource",
+    "CGImageDestination",
+    "CGImageProperties",
+    "objc2-core-graphics",
+] }

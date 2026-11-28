@@ -4,6 +4,7 @@ members = [
     "crates/pipster",
     "crates/pipster-player",
     "crates/pipster-governor",
+    "crates/pipster-image",
 ]
 
 [workspace.package]

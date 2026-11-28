@@ -1,4 +1,8 @@
 mod file_drop;
+#[cfg(target_os = "macos")]
+mod image_jobs;
+#[cfg(target_os = "macos")]
+mod image_viewer;
 mod macos_open;
 mod menu;
 mod pending_open;
@@ -85,18 +89,20 @@ fn install_pending_open_drain(app: &Rc<AppController>) {
             if paths.is_empty() {
                 return;
             }
-            let videos: Vec<_> = paths
+            let media: Vec<_> = paths
                 .into_iter()
-                .filter(|p| player_host::is_probably_video(p))
+                .filter(|p| player_host::is_probably_media(p))
                 .collect();
-            if videos.is_empty() {
+            if media.is_empty() {
                 if let Some(main) = app.upgrade_main_public() {
-                    main.set_status_text("Drop video files (mp4, mov, mkv, …).".into());
+                    main.set_status_text(
+                        "Drop video or image files (mp4, mov, jpg, png, heic, …).".into(),
+                    );
                 }
                 return;
             }
-            for path in &videos {
-                app.spawn_player(Some(path));
+            for path in &media {
+                app.open_media(path);
             }
         },
     );

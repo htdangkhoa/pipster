@@ -4,7 +4,7 @@ Lightweight desktop **multi-window PiP** video player for macOS (MVP).
 
 - **UI:** Rust + Slint (library / prefs window — no Chromium)
 - **Playback:** Homebrew **mpv** as one OS process per floating window, controlled via JSON IPC
-- **Formats:** anything mpv plays (MP4, MOV, MKV, WebM, …)
+- **Formats:** video (anything mpv plays) plus images (JPEG/PNG/HEIC/TIFF/WebP/BMP). Huge images open in a tiled floating viewer (pinch to zoom / pan) built from an ImageIO tile pyramid so RAM stays low.
 - **Prefs:** mute-on-spawn; always-on-top (no window limit)
 - **Open:** dialog, drag-and-drop onto the main window, CLI args, and Finder **Open With** (`.app`)
 
