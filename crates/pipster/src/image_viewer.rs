@@ -18,7 +18,7 @@ use objc2_app_kit::{
 use objc2_foundation::{NSPoint, NSRect, NSSize, NSString};
 use pipster_image::PyramidMeta;
 use std::cell::{Cell, RefCell};
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 struct LevelCache {
     level: u32,
@@ -415,7 +415,7 @@ impl PipsterImageContentView {
 
 fn load_level(
     view: &PipsterImageContentView,
-    root: &PathBuf,
+    root: &Path,
     level: u32,
 ) -> Option<Retained<NSImage>> {
     {
